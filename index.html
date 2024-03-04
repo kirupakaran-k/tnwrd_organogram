@@ -4,48 +4,43 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    /* Style for the tooltip container */
-    .tooltip-container {
-      display: none;
+    /* Apply modern and minimalist font to chart elements */
+    #chart_div {
+      font-family: 'Roboto', sans-serif;
     }
 
-    /* Apply underline to headings */
+    /* Style for the first heading (h1) */
     h1 {
       font-family: 'Montserrat', sans-serif;
       font-weight: bold;
       text-decoration: underline;
+      font-size: 1.8em; /* Adjust the font size as needed */
     }
 
-    h2, p {
-      font-family: 'Roboto', sans-serif;
+    /* Style for the second heading (h2) */
+    h2 {
+      font-family: 'Arial', sans-serif; /* Different font for h2 */
+      font-weight: bold;
+      text-decoration: underline;
+      font-size: 1.2em; /* Adjust the font size as needed */
     }
 
-    /* Font for chart content */
-    #chart_div {
-      font-family: 'Arial', sans-serif;
-    }
-
-    /* Style for the brackets around the definition */
+    /* Style for the definition */
     .definition {
-      display: inline-block;
-      font-size: 60%; /* Set font size to 60% of the parent */
+      font-size: 60%; /* Adjust the font size as needed */
       margin-left: 0.2em; /* Adjust the spacing as needed */
-    }
-
-    /* Normal font weight for the definition */
-    .normal-font-weight {
       font-weight: normal;
+      text-decoration: none !important; /* Remove underline */
     }
   </style>
-  <!-- Include Google Fonts -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&family=Roboto:wght@400&display=swap">
+  <!-- Include Google Charts -->
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
   <script type="text/javascript">
     google.charts.load('current', {packages:["orgchart"]});
     google.charts.setOnLoadCallback(drawChart);
 
     function drawChart() {
-      var query = google.visualization.Query('https://docs.google.com/spreadsheets/d/1AtYX7hzmdZ0AvQMyUCamBFm6jtvg5f9yHDLFGZQGo4g/gviz/tq?sheet=Coimbatore&range=A2:D');
+      var query = new google.visualization.Query('https://docs.google.com/spreadsheets/d/1AtYX7hzmdZ0AvQMyUCamBFm6jtvg5f9yHDLFGZQGo4g/gviz/tq?sheet=Coimbatore&range=A2:D');
       query.send(handleQueryResponse);
     }
 
@@ -57,8 +52,16 @@
 
       var data = response.getDataTable();
 
-      // Create the organization chart
+      // Draw the organization chart with pop-up tooltips
       var chart = new google.visualization.OrgChart(document.getElementById('chart_div'));
+
+      google.visualization.events.addListener(chart, 'onmouseover', function(e) {
+        var tooltip = data.getValue(e.row, 2); // Assuming ToolTip is in column C
+
+        if (tooltip) {
+          alert(tooltip);
+        }
+      });
 
       chart.draw(data, {allowHtml:true});
     }
@@ -69,7 +72,7 @@
   <h1>TAMILNADU WATER RESOURCES DEPARTMENT</h1>
 
   <!-- Second heading for the organization chart -->
-  <h2><span style="text-decoration: underline;">ORGANOGRAM</span> <span class="definition normal-font-weight">[Definition: A visual representation of an organization's structure, illustrating hierarchy and relationships.]</span></h2>
+  <h2>ORGANOGRAM<span class="definition"> [Definition: A visual representation of an organization's structure, illustrating hierarchy and relationships.]</span></h2>
 
   <!-- Container for the organization chart -->
   <div id="chart_div"></div>
