@@ -1,69 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-  <script type="text/javascript">
-    google.charts.load('current', {packages:["orgchart"]});
-    google.charts.setOnLoadCallback(drawChart);
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organization Chart</title>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        google.charts.load('current', { 'packages': ['orgchart'] });
+        google.charts.setOnLoadCallback(drawChart);
 
-    function drawChart() {
-      var query = new google.visualization.Query('https://docs.google.com/spreadsheets/d/1AtYX7hzmdZ0AvQMyUCamBFm6jtvg5f9yHDLFGZQGo4g/gviz/tq?sheet=Coimbatore&range=A2:D');
-      query.send(handleQueryResponse);
-    }
+        function drawChart() {
+            // Replace 'YOUR_GOOGLE_SHEET_CSV_LINK' with the provided link
+            var csvLink = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSMXcWajFGzYyObs22DwBes4J7oa-_4qC9aEpLWwfkFMDR18lNK2d-WXPzQJ776LtKCr68jbQgmL864/pub?gid=412639955&single=true&output=csv';
 
-    function handleQueryResponse(response) {
-      if (response.isError()) {
-        console.error('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
-        return;
-      }
+            // Load the CSV file and create the chart
+            jQuery.get(csvLink, function (csvString) {
+                var arrayData = $.csv.toArrays(csvString, { onParseValue: $.csv.hooks.castToScalar });
 
-      var data = response.getDataTable();
+                var data = new google.visualization.DataTable();
+                data.addColumn('string', 'Name');
+                data.addColumn('string', 'Manager');
+                data.addRows(arrayData);
 
-      // Draw the organization chart with basic HTML tooltips
-      var chart = new google.visualization.OrgChart(document.getElementById('chart_div'));
-
-      google.visualization.events.addListener(chart, 'onmouseover', function(e) {
-        var tooltip = data.getValue(e.row, 2); // Assuming ToolTip is in column C
-
-        if (tooltip) {
-          var tooltipDiv = document.createElement('div');
-          tooltipDiv.className = 'custom-tooltip';
-          tooltipDiv.innerHTML = tooltip;
-
-          var chartContainer = document.getElementById('chart_div');
-          chartContainer.appendChild(tooltipDiv);
-
-          // Position the tooltip beside the mouse cursor
-          tooltipDiv.style.left = (e.clientX + 10) + 'px';
-          tooltipDiv.style.top = (e.clientY + 10) + 'px';
+                var chart = new google.visualization.OrgChart(document.getElementById('chart_div'));
+                chart.draw(data, { 'allowHtml': true });
+            });
         }
-      });
-
-      google.visualization.events.addListener(chart, 'onmouseout', function() {
-        // Remove the tooltip when mouse leaves the node
-        var chartContainer = document.getElementById('chart_div');
-        var tooltipDiv = chartContainer.querySelector('.custom-tooltip');
-        if (tooltipDiv) {
-          chartContainer.removeChild(tooltipDiv);
-        }
-      });
-
-      chart.draw(data, {allowHtml:true});
-    }
-  </script>
-  <style>
-    .custom-tooltip {
-      position: absolute;
-      padding: 10px;
-      background-color: #f9f9f9;
-      border: 1px solid #ccc;
-      max-width: 200px;
-    }
-  </style>
+    </script>
 </head>
 <body>
-  <div id="chart_div"></div>
+    <div id="chart_div"></div>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-csv/1.0.11/jquery.csv.min.js"></script>
 </body>
 </html>
