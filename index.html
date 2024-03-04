@@ -1,35 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Organization Chart</title>
-    <!-- Load Google Charts API -->
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script type="text/javascript">
-        google.charts.load('current', {'packages':['orgchart']});
-        google.charts.setOnLoadCallback(drawChart);
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    /* Style for the tooltip container */
+    .tooltip-container {
+      display: none;
+    }
 
-        function drawChart() {
-            // Fetch data from Google Sheets JSON feed
-            fetch('https://spreadsheets.google.com/feeds/list/1AtYX7hzmdZ0AvQMyUCamBFm6jtvg5f9yHDLFGZQGo4g/od6/public/values?alt=json')
-                .then(response => response.json())
-                .then(data => {
-                    // Process the data into the required format
-                    const chartData = [['Name', 'Manager ID']];
-                    data.feed.entry.forEach(entry => {
-                        chartData.push([entry.gsx$name.$t, entry.gsx$managerid.$t]);
-                    });
+    /* Apply underline to headings */
+    h1, h2 {
+      text-decoration: underline;
+    }
 
-                    // Create and draw the organization chart
-                    const chart = new google.visualization.OrgChart(document.getElementById('chart_div'));
-                    chart.draw(google.visualization.arrayToDataTable(chartData), {allowHtml:true});
-                })
-                .catch(error => console.error('Error fetching data:', error));
-        }
-    </script>
+    /* Different modern fonts for headings and paragraphs */
+    h1 {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: bold;
+    }
+
+    h2, p {
+      font-family: 'Roboto', sans-serif;
+    }
+
+    /* Font for chart content */
+    #chart_div {
+      font-family: 'Arial', sans-serif;
+    }
+
+    /* Style for the brackets around the definition */
+    .definition {
+      display: inline-block;
+      margin-left: 0.5em; /* Adjust the spacing as needed */
+    }
+  </style>
+  <!-- Include Google Fonts -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&family=Roboto:wght@400&display=swap">
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <script type="text/javascript">
+    google.charts.load('current', {packages:["orgchart"]});
+    google.charts.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+      var query = new google.visualization.Query('https://docs.google.com/spreadsheets/d/1AtYX7hzmdZ0AvQMyUCamBFm6jtvg5f9yHDLFGZQGo4g/gviz/tq?sheet=Coimbatore&range=A2:D');
+      query.send(handleQueryResponse);
+    }
+
+    function handleQueryResponse(response) {
+      if (response.isError()) {
+        console.error('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
+        return;
+      }
+
+      var data = response.getDataTable();
+
+      // Create the organization chart
+      var chart = new google.visualization.OrgChart(document.getElementById('chart_div'));
+
+      chart.draw(data, {allowHtml:true});
+    }
+  </script>
 </head>
 <body>
-    <h1>Organization Chart</h1>
-    <div id="chart_div"></div>
+  <!-- First heading for the organization chart -->
+  <h1>TAMILNADU WATER RESOURCES DEPARTMENT</h1>
+
+  <!-- Second heading for the organization chart -->
+  <h2>ORGANOGRAM</h2>
+
+  <!-- Definition of Organogram in square brackets -->
+  <p class="definition">[Definition: A visual representation of an organization's structure, illustrating hierarchy and relationships.]</p>
+
+  <!-- Container for the organization chart -->
+  <div id="chart_div"></div>
 </body>
 </html>
