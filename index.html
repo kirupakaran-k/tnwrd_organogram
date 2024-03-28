@@ -44,7 +44,7 @@
     google.charts.setOnLoadCallback(drawChart);
 
     function drawChart() {
-      var query = new google.visualization.Query('https://https://docs.google.com/spreadsheets/d/1KKewbyGqj5M0NTCJ1TRtSv8zwXdfTHeIgU8FIAdw_7M/gviz/tq?sheet=Coimbatore&range=A2:D');
+      var query = new google.visualization.Query('https://docs.google.com/spreadsheets/d/1KKewbyGqj5M0NTCJ1TRtSv8zwXdfTHeIgU8FIAdw_7M/gviz/tq?sheet=Coimbatore&range=A2:D');
       query.send(handleQueryResponse);
     }
 
@@ -56,7 +56,7 @@
 
       var data = response.getDataTable();
 
-      // Draw the organization chart with pop-up tooltips
+      // Draw the organization chart with horizontal orientation
       var chart = new google.visualization.OrgChart(document.getElementById('chart_div'));
 
       google.visualization.events.addListener(chart, 'onmouseover', function(e) {
